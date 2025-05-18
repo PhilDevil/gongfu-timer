@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Einfacher Gong Fu Timer</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 20px; }
+        #timer { font-size: 48px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Einfacher Gong Fu Timer</h1>
+    <label>Startzeit (Sek.): <input type="number" id="start" value="20"></label>
+    <label>+ je Aufguss (Sek.): <input type="number" id="add" value="5"></label><br><br>
+    <button onclick="startCountdown()">Start</button>
+    <button onclick="reset()">Reset</button>
+    <div id="info">Bereit</div>
+    <div id="timer">00:00</div>
+
+    <script>
+        let infusion = 1;
+        let interval;
+        let secondsLeft = 0;
+
+        function format(s) {
+            return (s < 10 ? "0" : "") + s;
+        }
+
+        function updateDisplay() {
+            document.getElementById("timer").innerText = "00:" + format(secondsLeft);
+        }
+
+        function startCountdown() {
+            let base = parseInt(document.getElementById("start").value);
+            let add = parseInt(document.getElementById("add").value);
+            secondsLeft = base + (infusion - 1) * add;
+            updateDisplay();
+            document.getElementById("info").innerText = "Aufguss #" + infusion;
+
+            if (interval) clearInterval(interval);
+            interval = setInterval(() => {
+                secondsLeft--;
+                updateDisplay();
+                if (secondsLeft <= 0) {
+                    clearInterval(interval);
+                    document.getElementById("info").innerText = "Aufguss #" + infusion + " fertig!";
+                    document.getElementById("timer").innerText = "00:00";
+                    infusion++;
+                }
+            }, 1000);
+        }
+
+        function reset() {
+            clearInterval(interval);
+            infusion = 1;
+            document.getElementById("info").innerText = "Bereit";
+            document.getElementById("timer").innerText = "00:00";
+        }
+    </script>
+</body>
+</html>
