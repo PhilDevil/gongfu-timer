@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gong Fu Timer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f7f3ef;
+        }
+        h1 {
+            font-size: 36px;
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            margin: 15px auto;
+            font-size: 20px;
+        }
+        input {
+            padding: 12px;
+            font-size: 20px;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+        }
+        button {
+            padding: 15px 30px;
+            margin: 15px;
+            font-size: 22px;
+            background-color: #5c4033;
+            color: white;
+            border: none;
+            border-radius: 6px;
+        }
+        button:hover {
+            background-color: #7a564a;
+        }
+        #timer {
+            font-size: 64px;
+            margin-top: 40px;
+            color: #222;
+        }
+        #info {
+            font-size: 28px;
+            margin-top: 20px;
+            color: #444;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gong Fu Tea Timer</h1>
+    <label>
+        Startzeit (Sekunden):
+        <input type="number" id="start" value="20">
+    </label>
+    <label>
+        Zuschlag pro Aufguss (Sekunden):
+        <input type="number" id="add" value="5">
+    </label>
+    <button onclick="startCountdown()">Start</button>
+    <button onclick="reset()">Reset</button>
+    <div id="info">Bereit</div>
+    <div id="timer">00:00</div>
+
+    <script>
+        let infusion = 1;
+        let interval;
+        let secondsLeft = 0;
+
+        function format(s) {
+            return (s < 10 ? "0" : "") + s;
+        }
+
+        function updateDisplay() {
+            document.getElementById("timer").innerText = "00:" + format(secondsLeft);
+        }
+
+        function startCountdown() {
+            let base = parseInt(document.getElementById("start").value);
+            let add = parseInt(document.getElementById("add").value);
+            secondsLeft = base + (infusion - 1) * add;
+            updateDisplay();
+            document.getElementById("info").innerText = "Aufguss #" + infusion;
+
+            if (interval) clearInterval(interval);
+            interval = setInterval(() => {
+                secondsLeft--;
+                updateDisplay();
+                if (secondsLeft <= 0) {
+                    clearInterval(interval);
+                    document.getElementById("info").innerText = "Aufguss #" + infusion + " fertig!";
+                    document.getElementById("timer").innerText = "00:00";
+                    infusion++;
+                }
+            }, 1000);
+        }
+
+        function reset() {
+            clearInterval(interval);
+            infusion = 1;
+            document.getElementById("info").innerText = "Bereit";
+            document.getElementById("timer").innerText = "00:00";
+        }
+    </script>
+</body>
+</html>
